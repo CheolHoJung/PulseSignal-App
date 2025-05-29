@@ -1,3 +1,6 @@
+declare module 'vue3-markdown-it';
+declare module 'markdown-it-mermaid';
+
 declare namespace NodeJS {
   interface ProcessEnv {
     NODE_ENV: string;
