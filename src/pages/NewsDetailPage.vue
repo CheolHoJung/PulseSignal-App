@@ -21,9 +21,13 @@
         />
       </div>
       <q-separator spaced />
-      <div v-if="article.AIReportMarkdown" class="ai-summary-markdown q-mb-md">
-        <MarkdownIt v-if="markdownItOptions.md" :source="markdownText" :md="markdownItOptions.md" />
-      </div>
+      <MarkdownViewer
+        v-if="article.AIReportMarkdown"
+        :source="article.AIReportMarkdown"
+        :dark="isDark"
+        engine="markdown-it"
+        class="q-mb-md"
+      />
       <div
         v-else-if="getSummaryParts(article.AISummary).rest"
         class="ai-summary-markdown q-mb-md"
@@ -39,21 +43,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
+import { Dark } from 'quasar';
 import { useRoute, useRouter } from 'vue-router';
 import api from 'src/services/api';
 import type { NewsArticle } from 'src/types/news';
-
-import MarkdownItCore from 'markdown-it';
-import { ref as vueRef } from 'vue';
-import { defineAsyncComponent } from 'vue';
-const MarkdownIt = defineAsyncComponent(() => import('vue3-markdown-it'));
+import MarkdownViewer from 'src/components/MarkdownViewer/MarkdownViewer.vue';
 
 const route = useRoute();
 const router = useRouter();
 const article = ref<NewsArticle | null>(null);
-
-const markdownItOptions = vueRef<{ md: MarkdownItCore | null }>({ md: null });
+const isDark = ref(Dark.isActive);
 
 function formatDisplayDate(dateString: string): string {
   if (!dateString) return '';
@@ -72,20 +72,6 @@ function formatDisplayDate(dateString: string): string {
   );
 }
 
-const markdownText = computed(() => {
-  if (!article.value?.AIReportMarkdown) return '';
-  const src = article.value.AIReportMarkdown.trim();
-  // 코드펜스(\`\`\`...)로 감싸진 경우 첫 줄과 마지막 줄만 제거
-  const lines = src.split(/\r?\n/);
-  if (lines.length > 0 && lines[0]?.startsWith('```')) {
-    lines.shift();
-  }
-  if (lines.length > 0 && lines[lines.length - 1]?.trim() === '```') {
-    lines.pop();
-  }
-  return lines.join('\n').trim();
-});
-
 function getSummaryParts(summaryXml: string, aiReportMarkdown?: string) {
   if (aiReportMarkdown) {
     return {
@@ -99,50 +85,32 @@ function getSummaryParts(summaryXml: string, aiReportMarkdown?: string) {
   };
 }
 
-// 타입 가드 함수 추가
 function isArticleState(state: unknown): state is { article: NewsArticle } {
   return !!state && typeof state === 'object' && 'article' in state;
 }
 
 onMounted(async () => {
-  // 1. 라우터 state로 article이 넘어온 경우 우선 사용
   const state = router.options.history.state;
   if (isArticleState(state)) {
     article.value = state.article;
   }
-
-  // 머메이드 플러그인 import 및 등록 (브라우저에서만, await import + catch)
-  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-    try {
-      const { default: markdownItMermaid } = await import('markdown-it-mermaid');
-      const md = new MarkdownItCore({
-        html: true,
-        linkify: true,
-        typographer: true,
-      });
-      md.use(markdownItMermaid);
-      markdownItOptions.value.md = md;
-    } catch {
-      // mermaid 로딩 실패 시에도 마크다운만 렌더링
-      markdownItOptions.value.md = new MarkdownItCore();
-    }
-  }
-
-  // 2. fallback: 기존 API에서 찾아오기
   if (!article.value) {
     const id = route.params.id;
     if (!id) return;
     try {
-      const response = await api.getNews(1, 1000);
-      article.value = response.articles.find((a) => String(a.ID) === String(id)) || null;
+      article.value = await api.getNewsById(String(id));
     } catch {
       article.value = null;
     }
   }
 });
+
+watchEffect(() => {
+  isDark.value = Dark.isActive;
+});
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .ai-summary-markdown {
   border-radius: 8px;
   padding: 12px 16px;
@@ -150,6 +118,12 @@ onMounted(async () => {
   margin-top: 4px;
   line-height: 1.7;
   word-break: keep-all;
-  // 배경색/글자색은 상위(q-card)에서 상속
 }
 </style>
+
+<!--
+NOTE: If you see a postcss or vite error about 'Unknown word article.Title',
+it is likely because there is a stray <style> tag (or <style> block) above the <template> in your .vue file, or a missing <template> root tag.
+Make sure your <template> comes first, then <script>, then <style>.
+Also, check for any accidental .vue file import in a .css or .scss file.
+-->

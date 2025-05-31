@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { NewsApiResponse } from 'src/types/news';
+import type { NewsApiResponse, NewsArticle } from 'src/types/news';
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:8080/api', // Backend API URL. Adjust if necessary.
@@ -43,6 +43,15 @@ export default {
         page: 1,
         limit,
       };
+    }
+  },
+  async getNewsById(id: string): Promise<NewsArticle | null> {
+    try {
+      const response = await apiClient.get<NewsArticle>(`/news/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch news detail:', error);
+      return null;
     }
   },
 };
