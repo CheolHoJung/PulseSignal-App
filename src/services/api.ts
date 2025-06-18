@@ -54,4 +54,19 @@ export default {
       return null;
     }
   },
+  async searchNews(keyword: string, page = 1, limit = 15): Promise<NewsApiResponse> {
+    try {
+      const response = await apiClient.get<NewsApiResponse>(`/news/search?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      console.error('뉴스 검색 실패:', error);
+      // 검색 실패 시 빈 결과 반환
+      return {
+        articles: [],
+        total: 0,
+        page: 1,
+        limit,
+      };
+    }
+  },
 };
