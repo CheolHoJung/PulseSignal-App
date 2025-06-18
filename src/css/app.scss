@@ -1,1 +1,163 @@
-// app global css in SCSS form
+body {
+  background: #fff;
+  color: #222;
+  font-family: 'Inter', 'Noto Sans KR', 'Pretendard', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  color: #222;
+}
+
+.card,
+.q-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+button,
+.q-btn {
+  background: none;
+  border: 1px solid #eee;
+  color: #222;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: none;
+  transition: background 0.2s;
+}
+button:hover,
+.q-btn:hover {
+  background: #f5f5f5;
+}
+
+.text-muted {
+  color: #888;
+  font-size: 0.97em;
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+ul,
+ol {
+  padding-left: 1.2em;
+}
+
+li {
+  margin-bottom: 0.3em;
+}
+
+hr,
+.q-separator {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 24px 0;
+}
+
+.ai-summary-markdown,
+.markdown-viewer-root {
+  background: #fff;
+  color: #222;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  padding: 0;
+  word-break: break-word;
+}
+
+.ai-summary-markdown h1,
+.markdown-viewer-root h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 32px 0 16px 0;
+}
+.ai-summary-markdown h2,
+.markdown-viewer-root h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 28px 0 12px 0;
+}
+.ai-summary-markdown h3,
+.markdown-viewer-root h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 24px 0 8px 0;
+}
+.ai-summary-markdown ul,
+.markdown-viewer-root ul,
+.ai-summary-markdown ol,
+.markdown-viewer-root ol {
+  margin: 12px 0 12px 24px;
+  padding: 0;
+}
+.ai-summary-markdown li,
+.markdown-viewer-root li {
+  margin-bottom: 6px;
+}
+.ai-summary-markdown code,
+.markdown-viewer-root code {
+  background: #f6f6f6;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-family: 'JetBrains Mono', 'Fira Mono', 'Menlo', monospace;
+  font-size: 0.98em;
+  color: #2563eb;
+}
+.ai-summary-markdown pre,
+.markdown-viewer-root pre {
+  background: #f6f6f6;
+  border-radius: 6px;
+  padding: 16px;
+  font-family: 'JetBrains Mono', 'Fira Mono', 'Menlo', monospace;
+  font-size: 0.98em;
+  overflow-x: auto;
+}
+.ai-summary-markdown blockquote,
+.markdown-viewer-root blockquote {
+  background: #f8f8fa;
+  border-left: 4px solid #eee;
+  margin: 16px 0;
+  padding: 12px 20px;
+  color: #666;
+}
+.ai-summary-markdown a,
+.markdown-viewer-root a {
+  color: #2563eb;
+  text-decoration: none;
+}
+.ai-summary-markdown a:hover,
+.markdown-viewer-root a:hover {
+  text-decoration: underline;
+}
+.ai-summary-markdown table,
+.markdown-viewer-root table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0;
+}
+.ai-summary-markdown th,
+.markdown-viewer-root th,
+.ai-summary-markdown td,
+.markdown-viewer-root td {
+  border: 1px solid #eee;
+  padding: 8px 12px;
+  text-align: left;
+}

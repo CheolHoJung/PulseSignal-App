@@ -1,52 +1,38 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated :class="isDark ? 'bg-grey-10 text-grey-2' : ''">
-      <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
-        <q-toolbar-title :class="isDark ? 'text-white' : 'text-dark'">PulseSignal</q-toolbar-title>
-
-        <q-space />
-
-        <q-toggle
-          v-model="isDark"
-          checked-icon="dark_mode"
-          unchecked-icon="light_mode"
-          color="primary"
-          size="md"
-          class="q-mr-md"
-          :label="isDark ? '다크' : '라이트'"
-          @update:model-value="toggleDarkMode"
-        />
-        <div class="text-grey-6 text-caption q-mr-md">Quasar v{{ $q.version }}</div>
-      </q-toolbar>
+    <q-header class="notion-header" elevated>
+      <div class="notion-header-inner">
+        <button class="sidebar-toggle-btn" @click="sidebarMini = !sidebarMini">
+          <q-icon :name="sidebarMini ? 'chevron_right' : 'chevron_left'" />
+        </button>
+        <div class="notion-header-title">PulseSignal</div>
+        <div class="profile-avatar">PS</div>
+      </div>
     </q-header>
-
     <q-drawer
-      v-model="leftDrawerOpen"
+      class="notion-sidebar"
       show-if-above
+      v-model="leftDrawerOpen"
       bordered
-      :class="isDark ? 'bg-grey-10 text-grey-2' : 'bg-grey-1'"
+      :width="sidebarMini ? 48 : 220"
     >
-      <q-list padding>
-        <q-item-label
-          header
-          :class="isDark ? 'text-grey-4' : 'text-grey-7'"
-          class="text-weight-bold q-mb-sm q-mt-sm"
-          >Menu</q-item-label
-        >
-        <q-item clickable to="/" exact class="rounded-borders q-mb-xs menu-item">
-          <q-item-section avatar>
-            <q-icon name="home" :color="isDark ? 'grey-2' : 'primary'" size="md" />
-          </q-item-section>
-          <q-item-section :class="isDark ? 'text-grey-2' : 'text-body1 text-weight-medium'"
-            >Main</q-item-section
-          >
-        </q-item>
-      </q-list>
+      <div v-show="!sidebarMini">
+        <div class="notion-sidebar-title">PulseSignal</div>
+        <nav>
+          <ul>
+            <li>
+              <router-link to="/">메인</router-link>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div v-show="sidebarMini" class="notion-sidebar-mini-icons">
+        <router-link to="/">
+          <q-icon name="home" />
+        </router-link>
+      </div>
     </q-drawer>
-
-    <q-page-container>
+    <q-page-container class="notion-main">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -54,38 +40,110 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Dark } from 'quasar';
-
-const leftDrawerOpen = ref(false);
-const isDark = ref(Dark.isActive);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
-
-function toggleDarkMode(val: boolean) {
-  Dark.set(val);
-  isDark.value = val;
-}
+const leftDrawerOpen = ref(true);
+const sidebarMini = ref(false);
 </script>
 
-<style scoped lang="scss">
-.menu-item {
-  transition: background 0.2s;
-
-  &:hover {
-    background: $grey-2;
-    color: inherit;
-  }
+<style scoped>
+.notion-header, .notion-sidebar {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(4px);
 }
-
-body.body--dark .menu-item:hover {
-  background-color: #23272e !important;
-  color: #fff !important;
+.notion-header {
+  border-bottom: 1px solid #eee;
+  box-shadow: none;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
-
-.q-drawer {
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
+.notion-header-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 32px;
+  gap: 16px;
+}
+.sidebar-toggle-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #888;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  margin-right: 8px;
+}
+.sidebar-toggle-btn:hover {
+  background: #f5f5f5;
+}
+.notion-header-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+}
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f6fa;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-left: 16px;
+  font-size: 1rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.notion-sidebar {
+  border-right: 1px solid #eee;
+  padding: 32px 0 0 0;
+  position: relative;
+  transition: width 0.2s, min-width 0.2s, border 0.2s, padding 0.2s;
+  overflow-x: hidden;
+}
+.notion-sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 0 24px 24px 32px;
+  color: #222;
+  transition: opacity 0.2s;
+}
+.notion-sidebar nav ul {
+  list-style: none;
+  padding: 0 0 0 32px;
+  margin: 0;
+}
+.notion-sidebar nav li {
+  margin-bottom: 12px;
+}
+.notion-sidebar nav a {
+  color: #222;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 6px 0;
+  display: block;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.notion-sidebar nav a.router-link-exact-active,
+.notion-sidebar nav a:hover {
+  background: #f5f5f5;
+}
+.notion-sidebar-mini-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+  gap: 16px;
+}
+.notion-main {
+  background: #fff;
 }
 </style>

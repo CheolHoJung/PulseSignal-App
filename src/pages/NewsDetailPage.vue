@@ -1,43 +1,36 @@
 <template>
-  <q-page padding>
-    <q-btn flat icon="arrow_back" label="목록으로" @click="$router.back()" class="q-mb-md" />
-    <q-card v-if="article" class="q-pa-lg">
-      <div class="text-h5 text-weight-bold q-mb-sm">{{ article.Title }}</div>
-      <div class="text-caption text-grey-7 q-mb-md flex items-center">
-        <q-icon name="apartment" size="xs" class="q-mr-xs" />{{ article.Source }}
-        <q-icon name="event" size="xs" class="q-ml-sm q-mr-xs" />{{
+  <q-page>
+    <q-btn class="notion-btn" icon="arrow_back" label="목록으로" @click="$router.back()" />
+    <q-card v-if="article">
+      <div>{{ article.Title }}</div>
+      <div>
+        <q-icon name="apartment" />{{ article.Source }} <q-icon name="event" />{{
           formatDisplayDate(article.CollectedAt)
         }}
         <q-btn
-          color="primary"
+          class="notion-btn"
           icon="open_in_new"
           label="원문 보기"
           :href="article.URL"
           target="_blank"
-          flat
-          size="sm"
-          class="q-ml-sm q-px-sm q-py-none"
-          style="height: 24px; font-size: 0.92em"
         />
       </div>
-      <q-separator spaced />
+      <q-separator />
       <MarkdownViewer
         v-if="article.AIReportMarkdown"
         :source="article.AIReportMarkdown"
         :dark="isDark"
         engine="markdown-it"
-        class="q-mb-md"
       />
       <div
         v-else-if="getSummaryParts(article.AISummary).rest"
-        class="ai-summary-markdown q-mb-md"
         v-html="getSummaryParts(article.AISummary).rest"
       />
     </q-card>
-    <q-card v-else flat class="q-pa-xl text-center text-grey-6 bg-grey-2 rounded-borders q-mt-lg">
-      <q-icon name="error_outline" size="3em" />
-      <div class="text-subtitle1 q-mt-sm">기사를 찾을 수 없습니다.</div>
-      <q-btn label="목록으로" color="primary" @click="$router.back()" class="q-mt-md" unelevated />
+    <q-card v-else>
+      <q-icon name="error_outline" />
+      <div>기사를 찾을 수 없습니다.</div>
+      <q-btn class="notion-btn" label="목록으로" @click="$router.back()" />
     </q-card>
   </q-page>
 </template>
@@ -110,14 +103,27 @@ watchEffect(() => {
 });
 </script>
 
-<style lang="scss">
-.ai-summary-markdown {
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 0.98em;
-  margin-top: 4px;
-  line-height: 1.7;
-  word-break: keep-all;
+<style scoped>
+.notion-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 18px;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background: #fff;
+  color: #222;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: none;
+  transition: background 0.15s, border 0.15s;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.notion-btn:hover {
+  background: #f5f5f5;
+  border-color: #ddd;
 }
 </style>
 
