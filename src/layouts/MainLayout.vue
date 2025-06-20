@@ -90,8 +90,9 @@ function onSearch() {
 </script>
 
 <style scoped>
-.notion-header, .notion-sidebar {
-  background: rgba(255,255,255,0.95);
+.notion-header,
+.notion-sidebar {
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(4px);
 }
 .notion-header {
@@ -147,6 +148,7 @@ function onSearch() {
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 .notion-sidebar {
+  background: #f7f7f8;
   border-right: 1px solid #eee;
   padding: 32px 0 0 0;
   position: relative;
@@ -190,6 +192,12 @@ function onSearch() {
 }
 .notion-main {
   background: #fff;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  min-height: calc(100vh - 56px);
 }
 .sidebar-search-wrap {
   display: flex;
